@@ -2,7 +2,8 @@
 
 [anyrouter.top](https://anyrouter.top)（基于 NewAPI 的 Claude 中转站）每日自动签到，并返回账户余额。
 
-## 为什么是脚本，而不是 QD（签到框架）的 HAR 模板？
+<details>
+<summary>为什么是脚本，而不是 QD（签到框架）的 HAR 模板？</summary>
 
 anyrouter.top 挡在 **阿里云 ESA 的 `acw_sc__v2` JS 挑战 WAF** 后面：
 
@@ -11,6 +12,8 @@ anyrouter.top 挡在 **阿里云 ESA 的 `acw_sc__v2` JS 挑战 WAF** 后面：
 3. QD / 签到 这类框架是 **纯 HTTP、不执行 JavaScript**，所以无法自行过这道 WAF。
 
 因此用一个会执行挑战 JS 的 Node 脚本来做。脚本通过 Node 内置的 `vm` 沙箱执行挑战脚本，自动算出 `acw_sc__v2`，**零第三方依赖**。
+
+</details>
 
 ## 准备：拿到 `session` 和 `user_id`
 
