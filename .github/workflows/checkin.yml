@@ -24,6 +24,7 @@ jobs:
           FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
           DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+          QYWX_AM: ${{ secrets.QYWX_AM }}
           WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
           BARK_URL: ${{ secrets.BARK_URL }}
           SC_KEY: ${{ secrets.SC_KEY }}

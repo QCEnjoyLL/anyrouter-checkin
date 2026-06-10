@@ -240,10 +240,15 @@ async function notify(title, text) {
     tasks.push(postJSON(process.env.FEISHU_WEBHOOK, { msg_type: 'text', content: { text: full } }));
     used.push('飞书');
   }
-  // 企业微信群机器人（POST）
+  // 企业微信群机器人（POST webhook）
   if (process.env.WECOM_WEBHOOK) {
     tasks.push(postJSON(process.env.WECOM_WEBHOOK, { msgtype: 'text', text: { content: full } }));
-    used.push('企业微信');
+    used.push('企业微信群机器人');
+  }
+  // 企业微信「应用消息」——与青龙 QYWX_AM 同格式：corpid,corpsecret,touser,agentid[,media_id]
+  if (process.env.QYWX_AM || process.env.WEWORK_APP_KEY) {
+    tasks.push(wecomApp(title, text));
+    used.push('企业微信应用');
   }
   // 钉钉自定义机器人（POST，支持加签 DINGTALK_SECRET）
   if (process.env.DINGTALK_WEBHOOK) {
@@ -296,6 +301,74 @@ function postJSON(u, obj) {
       req.end(data);
     } catch (_) { resolve(); }
   });
+}
+
+/** 发请求并返回响应正文文本（出错返回空串），用于需要读返回值的渠道 */
+function fetchText(method, u, obj) {
+  return new Promise((resolve) => {
+    try {
+      const data = obj ? JSON.stringify(obj) : null;
+      const { hostname, pathname, search, port } = new URL(u);
+      const headers = data
+        ? { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) }
+        : {};
+      const req = https.request(
+        { hostname, port: port || 443, path: pathname + (search || ''), method, headers },
+        (r) => {
+          const chunks = [];
+          r.on('data', (c) => chunks.push(c));
+          r.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+        }
+      );
+      req.on('error', () => resolve(''));
+      req.end(data || undefined);
+    } catch (_) { resolve(''); }
+  });
+}
+
+/**
+ * 企业微信「应用消息」推送，参数格式与青龙 QYWX_AM 一致：
+ *   corpid,corpsecret,touser,agentid[,media_id]
+ * 不填 media_id 发文本消息；填了则发图文(mpnews)。touser 用 @all 或多个成员用 | 隔开。
+ */
+async function wecomApp(title, content) {
+  const conf = process.env.QYWX_AM || process.env.WEWORK_APP_KEY || '';
+  const p = conf.split(',').map((s) => s.trim());
+  if (p.length < 4) {
+    console.log('企业微信应用：QYWX_AM 配置格式错误，应为 corpid,corpsecret,touser,agentid[,media_id]');
+    return;
+  }
+  const [corpid, corpsecret, touser, agentid, mediaId] = p;
+
+  // 1) 取 access_token
+  const tokRaw = await fetchText(
+    'GET',
+    `https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=${encodeURIComponent(corpid)}&corpsecret=${encodeURIComponent(corpsecret)}`
+  );
+  let token = '';
+  try { token = JSON.parse(tokRaw).access_token || ''; } catch (_) {}
+  if (!token) {
+    console.log('企业微信应用：获取 access_token 失败（请检查 corpid / corpsecret）');
+    return;
+  }
+
+  // 2) 发消息
+  let body;
+  if (mediaId) {
+    body = {
+      touser, agentid, msgtype: 'mpnews',
+      mpnews: { articles: [{ title, thumb_media_id: mediaId, author: 'AnyRouter', content_source_url: '', content: content.replace(/\n/g, '<br/>'), digest: content }] },
+    };
+  } else {
+    body = { touser, agentid, msgtype: 'text', text: { content: `${title}\n\n${content}` }, safe: '0' };
+  }
+  const sendRaw = await fetchText('POST', `https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=${token}`, body);
+  try {
+    const j = JSON.parse(sendRaw);
+    if (j.errcode !== 0) console.log(`企业微信应用推送失败：${j.errmsg || sendRaw}`);
+  } catch (_) {
+    console.log('企业微信应用：发送响应解析失败');
+  }
 }
 
 // ---------------------------------------------------------------- 主流程

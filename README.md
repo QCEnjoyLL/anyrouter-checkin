@@ -91,13 +91,25 @@ node checkin.js
 | --- | --- |
 | 飞书 / Lark | `FEISHU_WEBHOOK`（自定义机器人 webhook 地址） |
 | 钉钉 | `DINGTALK_WEBHOOK`，加签可选填 `DINGTALK_SECRET` |
-| 企业微信 | `WECOM_WEBHOOK`（群机器人 webhook 地址） |
+| **企业微信应用**（青龙同款） | `QYWX_AM` = `corpid,corpsecret,touser,agentid[,media_id]` |
+| 企业微信群机器人 | `WECOM_WEBHOOK`（群机器人 webhook 地址） |
 | Telegram | `TG_BOT_TOKEN` + `TG_CHAT_ID` |
 | Bark | `BARK_URL`（如 `https://api.day.app/yourkey`） |
 | Server酱 | `SC_KEY`（`SCT` 开头的 SendKey） |
 | 通用 webhook | `NOTIFY_WEBHOOK`（收到 `{title, text}` 的 JSON POST） |
 
-> 钉钉 / 企业微信机器人若设了「自定义关键词」安全策略，关键词填 `签到` 或 `AnyRouter` 即可（推送标题已包含）。钉钉用「加签」则填 `DINGTALK_SECRET`。
+> 钉钉 / 企业微信群机器人若设了「自定义关键词」安全策略，关键词填 `签到` 或 `AnyRouter` 即可（推送标题已包含）。钉钉用「加签」则填 `DINGTALK_SECRET`。
+
+**企业微信应用 `QYWX_AM`**（与青龙面板参数完全一致，逗号分隔，用英文逗号）：
+
+```
+corpid,corpsecret,touser,agentid[,media_id]
+```
+
+- `corpid`：企业 ID；`corpsecret`：应用的 Secret；`agentid`：应用 AgentId；
+- `touser`：接收成员，`@all` 发给全部，多个成员用 `|` 隔开；
+- `media_id`：**选填**，不填发文本消息，填了发图文(mpnews)；
+- 例：`wwcfrs,B-76WERQ,qinglong,1000001,2COat`（占位示例；兼容写法 `WEWORK_APP_KEY` 同义）。
 
 推送消息示例（多账号）：
 
