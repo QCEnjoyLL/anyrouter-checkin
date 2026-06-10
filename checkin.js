@@ -395,7 +395,7 @@ async function main() {
     const totalQuota = results.reduce((s, r) => s + (r.quota || 0), 0);
     lines.push(`— 合计余额 ${fmtUSD(totalQuota)}`);
   }
-  lines.push(`🕒 ${new Date().toLocaleString('zh-CN', { hour12: false })}`);
+  lines.push(`🕒 ${new Date().toLocaleString('zh-CN', { hour12: false, timeZone: 'Asia/Shanghai' })} (北京时间)`);
 
   const title = `AnyRouter 签到 ${okCount}/${results.length} 成功`;
   await notify(title, lines.join('\n'));
