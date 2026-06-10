@@ -91,7 +91,7 @@ node checkin.js
 | --- | --- |
 | 飞书 / Lark | `FEISHU_WEBHOOK`（自定义机器人 webhook 地址） |
 | 钉钉 | `DINGTALK_WEBHOOK`，加签可选填 `DINGTALK_SECRET` |
-| **企业微信应用**（青龙同款） | `QYWX_AM` = `corpid,corpsecret,touser,agentid[,media_id]` |
+| **企业微信应用** | `QYWX_AM` = `corpid,corpsecret,touser,agentid[,media_id]` |
 | 企业微信群机器人 | `WECOM_WEBHOOK`（群机器人 webhook 地址） |
 | Telegram | `TG_BOT_TOKEN` + `TG_CHAT_ID` |
 | Bark | `BARK_URL`（如 `https://api.day.app/yourkey`） |
@@ -100,7 +100,7 @@ node checkin.js
 
 > 钉钉 / 企业微信群机器人若设了「自定义关键词」安全策略，关键词填 `签到` 或 `AnyRouter` 即可（推送标题已包含）。钉钉用「加签」则填 `DINGTALK_SECRET`。
 
-**企业微信应用 `QYWX_AM`**（与青龙面板参数完全一致，逗号分隔，用英文逗号）：
+**企业微信应用 `QYWX_AM`**（逗号分隔，请用英文逗号）：
 
 ```
 corpid,corpsecret,touser,agentid[,media_id]
