@@ -1,0 +1,12 @@
+[
+  {
+    "name": "我的主号",
+    "session": "粘贴浏览器 Cookie 里的 session 值（很长的一串）",
+    "user_id": 12345
+  },
+  {
+    "name": "小号(可选，支持多账号)",
+    "session": "另一个账号的 session",
+    "user_id": 10000
+  }
+]

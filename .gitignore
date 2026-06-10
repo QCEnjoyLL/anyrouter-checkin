@@ -1,0 +1,4 @@
+# 不要提交真实账号配置（含敏感 session）
+accounts.json
+node_modules/
+*.log

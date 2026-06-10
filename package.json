@@ -1,0 +1,10 @@
+{
+  "name": "anyrouter-checkin",
+  "version": "1.0.0",
+  "description": "AnyRouter / NewAPI 每日自动签到 + 余额查询（自动绕过阿里云 acw_sc__v2 JS 挑战 WAF，零依赖）",
+  "main": "checkin.js",
+  "scripts": {
+    "start": "node checkin.js"
+  },
+  "license": "MIT"
+}
