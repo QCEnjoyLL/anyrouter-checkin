@@ -6,6 +6,8 @@ on:
     # 注：GitHub Actions 定时任务常有几分钟~十几分钟延迟，属正常现象；重复签到无副作用
     - cron: '0 0,12 * * *'
   workflow_dispatch: {}   # 支持手动触发
+  push:
+    branches: [main]      # 推送到 main 即自动触发一次（方便验证；不需要可删掉这两行）
 
 jobs:
   checkin:
